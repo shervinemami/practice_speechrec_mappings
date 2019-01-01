@@ -1,7 +1,11 @@
+=================
+Practice Speechrec Mappings
+=================
 A very mininal game that helps practice names of keys for Dragonfly speech recognition grammars.
 By Shervin Emami 2019, shervin.emami@gmail.com.
 
 Background:
+----------------
 When using speech recognition for voice coding / programming / computer control, it's quite important to have high accuracy of each
 letter of the alphabet, and the various symbols that will be used. Rather than speak each character or variable name directly, it's 
 far more accurate to use a mapping of words to characters, such as by saying the word "alpha" instead of just the letter "a". I created 
@@ -21,18 +25,20 @@ speed when using speech vs keyboard.
 
 
 Usage:
-   python practice_mappings.py [<combo> [<capitals>]]
+----------------
+`python practice_mappings.py [<combo> [<capitals>]]`
 where:
    <combo>    How many characters you will try to say at the same time. Default is 3.
    <capitals> Percentage of characters that will be a capital letter. Default is 0.
 
 eg:
-   python practice_mappings.py
-   python practice_mappings.py 5 25
+   `python practice_mappings.py`
+   `python practice_mappings.py 5 25`
 
 
 Sample output:
-$ ./practice_mappings.py 5
+----------------
+`$ ./practice_mappings.py 5`
 ('(video) ', 'v')
 ('(queen) ', 'q')
 ('(rude) ', 'r')
