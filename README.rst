@@ -26,52 +26,59 @@ speed when using speech vs keyboard.
 
 Usage:
 ----------------
-python practice_mappings.py [<combo> [<capitals>]]
+.. code:: shell
+
+    python practice_mappings.py [<combo> [<capitals>]]
+
 where:
 <combo>    How many characters you will try to say at the same time. Default is 3.
 <capitals> Percentage of characters that will be a capital letter. Default is 0.
 
 eg:
-python practice_mappings.py
-python practice_mappings.py 5 25
+.. code:: shell
+
+    python practice_mappings.py
+    python practice_mappings.py 5 25
 
 
 Sample output:
 ----------------
-$ ./practice_mappings.py 5
-('(video) ', 'v')
-('(queen) ', 'q')
-('(rude) ', 'r')
-('(foxy) ', 'f')
-('(hotel) ', 'h')
-vqrfh
-Correct.                                  Tally: 1 correct, 0 wrong. Speed: 1.66 s/key
+.. code:: shell
 
-('(char) ', 'c')
-('(krux) ', 'k')
-('(foxy) ', 'f')
-('(queen) ', 'q')
-('(acid) ', 'a')
-ckfqa
-Correct.                                  Tally: 2 correct, 0 wrong. Speed: 0.76 s/key
-
-('(pingu) ', 'p')
-('(lazy) ', 'l')
-('(golf) ', 'g')
-('(video) ', 'v')
-('(ebike) ', 'e')
-plvee
-### WRONG! ######  plgve plvee ############ Tally: 2 correct, 1 wrong. ###################################
-
-('(char) ', 'c')
-('(rude) ', 'r')
-('(miley) ', 'm')
-('(omez) ', 'o')
-('(yazzam) ', 'y')
-crmoy
-Correct.                                  Tally: 3 correct, 1 wrong. Speed: 0.68 s/key
-
-
-
+    $ ./practice_mappings.py 5
+    ('(video) ', 'v')
+    ('(queen) ', 'q')
+    ('(rude) ', 'r')
+    ('(foxy) ', 'f')
+    ('(hotel) ', 'h')
+    vqrfh
+    Correct.                                  Tally: 1 correct, 0 wrong. Speed: 1.66 s/key
+    
+    ('(char) ', 'c')
+    ('(krux) ', 'k')
+    ('(foxy) ', 'f')
+    ('(queen) ', 'q')
+    ('(acid) ', 'a')
+    ckfqa
+    Correct.                                  Tally: 2 correct, 0 wrong. Speed: 0.76 s/key
+    
+    ('(pingu) ', 'p')
+    ('(lazy) ', 'l')
+    ('(golf) ', 'g')
+    ('(video) ', 'v')
+    ('(ebike) ', 'e')
+    plvee
+    ### WRONG! ######  plgve plvee ############ Tally: 2 correct, 1 wrong. ###################################
+    
+    ('(char) ', 'c')
+    ('(rude) ', 'r')
+    ('(miley) ', 'm')
+    ('(omez) ', 'o')
+    ('(yazzam) ', 'y')
+    crmoy
+    Correct.                                  Tally: 3 correct, 1 wrong. Speed: 0.68 s/key
+    
+    
+    
 To use your own grammar and not myne, you'll need to copy the alphabet character mapping from your grammar into the
 Python script (in the section marked "INSERT LETTER MAP HERE").
