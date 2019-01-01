@@ -1,10 +1,46 @@
 #!/usr/bin/env python
 # A very mininal game that helps practice names of keys for Dragonfly speech recognition grammars.
-# By Shervin Emami 2019, shervin.emami@gmail.com.
+# By Shervin Emami 2019, "http://shervinemami.info/".
 # Tested on Ubuntu 18.04 using python 2.7.
 
 import random
 import time
+
+
+
+#--------------------------------------
+# INSERT LETTER MAP HERE:
+letterMap = {
+    "(acid) ": "a",         # alpha is a bit like up. axis is like backspace. "(aim|and) ": "a",        # careful of 8, @, lace, lack. My "aim" sometimes gets picked up as "and".
+    "(brown) ": "b",        #  "black" is like "ebike", "best" sometimes gets picked up as "this" or "guess". "B|the" sometimes gets picked up as "enter"
+    "(char) ": "c",
+    "(dozen) ": "d",        # "does" is like "geez", "drax" is like "right". "dam" is like down. "dim" is like "ding". "dug" is like dot. "des" is like "this". "desk" is like "verse", "dose", "this".
+    "(ebike) ": "e",        # "ebike" is like "end black", "evo" isn't getting picked up! careful of x, see, end, as, up
+    "(foxy) ": "f",        # My "fox" is like "false" # careful of F1, F2 ...
+    "(golf) ": "g",             # My "gang" is like "can"
+    "(hotel) ": "h",        # careful of 8 and quote
+    "(itchy) ": "i",        # itchy is like teach
+    "(julia) ": "j",
+    "(krux) ": "k",        # careful of equal, colon and queen, geez.  My "kaput" is like "up". My "kilo" sometimes gets picked up as "killer"
+    "(lazy) ": "l",      # My "lima" is like "clean" and "end". My L sometimes gets picked up as "help". "L" is like Dragon keyword "spell" :-(
+    "(miley) ": "m",       # Mosfet is somehow like "plus" and "space"! # Mix is a bit like minus?  # My "mike" is similar to "my"
+    "(newish) ": "n",   # noosh is maybe like mosfet. niche is like unix. # nose?  "Nippy" is like "up"
+    "(omez) ": "o",     # orange is like end. oryx is like "echo".  My "osh" is like "as". My "omar" is like "home up"
+    "(pingu) ": "p",     # My "pom" is like "upon" and "up home"
+    "(queen) ": "q",    # "queen" is like "clean"
+    "(rude) ": "r",          # rolex is like krux. "rod" is like "right"
+    "(salty) ": "s",     # salt? # "sook" is like "up", "size" is like "keys". careful of snake, space,
+    "(trish) ": "t",        # tricky is like keys # teach is like itchy
+    "(unix) ": "u",          # "urge"? # careful of yang
+    "(video) ": "v",            # My "vix" is like "mix". My "vax" is like "backspace". My "van" is a bit like "then"
+    "(winter) ": "w",              # My "wes" is like "worse"
+    "(x-ray) ": "x",
+    "(yazzam) ": "y",     # yeast is like left. yellow is like "end left", yoke is like black. # "yang" is like "end". Careful of letter "u", home. "why" is like "white" that is like "why tay"
+    "(zooch) ": "z",     # zener is like insert. zulu isn't getting picked up! "zed" is like "said" and "set"
+}
+#--------------------------------------
+
+
 
 #---------------------------------------
 # Keyboard input code, taken from "https://github.com/akkana/scripts/blob/master/keyreader.py" on Jan 1st 2019.
@@ -94,40 +130,6 @@ class KeyReader :
 #--------------------------------------
 
 
-#--------------------------------------
-# INSERT LETTER MAP HERE:
-
-letterMap = {
-    "(acid) ": "a",         # alpha is a bit like up. axis is like backspace. "(aim|and) ": "a",        # careful of 8, @, lace, lack. My "aim" sometimes gets picked up as "and".
-    "(brown) ": "b",        #  "black" is like "ebike", "best" sometimes gets picked up as "this" or "guess". "B|the" sometimes gets picked up as "enter"
-    "(char) ": "c",
-    "(dozen) ": "d",        # "does" is like "geez", "drax" is like "right". "dam" is like down. "dim" is like "ding". "dug" is like dot. "des" is like "this". "desk" is like "verse", "dose", "this".
-    "(ebike) ": "e",        # "ebike" is like "end black", "evo" isn't getting picked up! careful of x, see, end, as, up
-    "(foxy) ": "f",        # My "fox" is like "false" # careful of F1, F2 ...
-    "(golf) ": "g",             # My "gang" is like "can"
-    "(hotel) ": "h",        # careful of 8 and quote
-    "(itchy) ": "i",        # itchy is like teach
-    "(julia) ": "j",
-    "(krux) ": "k",        # careful of equal, colon and queen, geez.  My "kaput" is like "up". My "kilo" sometimes gets picked up as "killer"
-    "(lazy) ": "l",      # My "lima" is like "clean" and "end". My L sometimes gets picked up as "help". "L" is like Dragon keyword "spell" :-(
-    "(miley) ": "m",       # Mosfet is somehow like "plus" and "space"! # Mix is a bit like minus?  # My "mike" is similar to "my"
-    "(newish) ": "n",   # noosh is maybe like mosfet. niche is like unix. # nose?  "Nippy" is like "up"
-    "(omez) ": "o",     # orange is like end. oryx is like "echo".  My "osh" is like "as". My "omar" is like "home up"
-    "(pingu) ": "p",     # My "pom" is like "upon" and "up home"
-    "(queen) ": "q",    # "queen" is like "clean"
-    "(rude) ": "r",          # rolex is like krux. "rod" is like "right"
-    "(salty) ": "s",     # salt? # "sook" is like "up", "size" is like "keys". careful of snake, space,
-    "(trish) ": "t",        # tricky is like keys # teach is like itchy
-    "(unix) ": "u",          # "urge"? # careful of yang
-    "(video) ": "v",            # My "vix" is like "mix". My "vax" is like "backspace". My "van" is a bit like "then"
-    "(winter) ": "w",              # My "wes" is like "worse"
-    "(x-ray) ": "x",
-    "(yazzam) ": "y",     # yeast is like left. yellow is like "end left", yoke is like black. # "yang" is like "end". Careful of letter "u", home. "why" is like "white" that is like "why tay"
-    "(zooch) ": "z",     # zener is like insert. zulu isn't getting picked up! "zed" is like "said" and "set"
-}
-
-
-#--------------------------------------
 
 
 # Allow custom combo length
