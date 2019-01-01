@@ -66,3 +66,6 @@ crmoy
 Correct.                                  Tally: 3 correct, 1 wrong. Speed: 0.68 s/key
 
 
+
+To use your own grammar and not myne, you'll need to copy the alphabet character mapping from your grammar into the
+Python script (in the section marked "INSERT LETTER MAP HERE").
