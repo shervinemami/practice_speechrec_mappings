@@ -27,16 +27,15 @@ speed when using speech vs keyboard.
 Usage:
 ----------------
 .. code:: shell
-
     python practice_mappings.py [<combo> [<capitals>]]
 
-where:
-<combo>    How many characters you will try to say at the same time. Default is 3.
-<capitals> Percentage of characters that will be a capital letter. Default is 0.
+    where:
+        <combo>    How many characters you will try to say at the same time. Default is 3.
+        <capitals> Percentage of characters that will be a capital letter. Default is 0.
 
 eg:
-.. code:: shell
 
+.. code:: shell
     python practice_mappings.py
     python practice_mappings.py 5 25
 
@@ -44,8 +43,8 @@ eg:
 Sample output:
 ----------------
 .. code:: shell
-
     $ ./practice_mappings.py 5
+    Press the", combo, "shown keys as fast as you can, using either a speech recognition engine or a physical keyboard!
     ('(video) ', 'v')
     ('(queen) ', 'q')
     ('(rude) ', 'r')
