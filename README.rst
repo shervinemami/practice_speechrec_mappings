@@ -26,7 +26,9 @@ speed when using speech vs keyboard.
 
 Usage:
 ----------------
+
 .. code:: shell
+
     python practice_mappings.py [<combo> [<capitals>]]
 
     where:
@@ -36,13 +38,16 @@ Usage:
 eg:
 
 .. code:: shell
+
     python practice_mappings.py
     python practice_mappings.py 5 25
 
 
 Sample output:
 ----------------
+
 .. code:: shell
+
     $ ./practice_mappings.py 5
     Press the", combo, "shown keys as fast as you can, using either a speech recognition engine or a physical keyboard!
     ('(video) ', 'v')
