@@ -49,7 +49,7 @@ Sample output:
 .. code:: shell
 
     $ ./practice_mappings.py 5
-    Press the", combo, "shown keys as fast as you can, using either a speech recognition engine or a physical keyboard!
+    Press the 5 shown keys as fast as you can, using either a speech recognition engine or a physical keyboard!
     ('(video) ', 'v')
     ('(queen) ', 'q')
     ('(rude) ', 'r')
