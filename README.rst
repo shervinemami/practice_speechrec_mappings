@@ -26,19 +26,19 @@ speed when using speech vs keyboard.
 
 Usage:
 ----------------
-`python practice_mappings.py [<combo> [<capitals>]]`
+python practice_mappings.py [<combo> [<capitals>]]
 where:
-   <combo>    How many characters you will try to say at the same time. Default is 3.
-   <capitals> Percentage of characters that will be a capital letter. Default is 0.
+<combo>    How many characters you will try to say at the same time. Default is 3.
+<capitals> Percentage of characters that will be a capital letter. Default is 0.
 
 eg:
-   `python practice_mappings.py`
-   `python practice_mappings.py 5 25`
+python practice_mappings.py
+python practice_mappings.py 5 25
 
 
 Sample output:
 ----------------
-`$ ./practice_mappings.py 5`
+$ ./practice_mappings.py 5
 ('(video) ', 'v')
 ('(queen) ', 'q')
 ('(rude) ', 'r')
