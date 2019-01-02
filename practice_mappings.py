@@ -5,14 +5,14 @@
 
 import random
 import time
-
+import operator
 
 
 #--------------------------------------
 # INSERT LETTER MAP HERE:
 letterMap = {
     "(acid) ": "a",         # alpha is a bit like up. axis is like backspace. "(aim|and) ": "a",        # careful of 8, @, lace, lack. My "aim" sometimes gets picked up as "and".
-    "(brown) ": "b",        #  "black" is like "ebike", "best" sometimes gets picked up as "this" or "guess". "B|the" sometimes gets picked up as "enter"
+    "(brain) ": "b",        #  "brown" is like down. "black" is like "ebike", "best" sometimes gets picked up as "this" or "guess". "B|the" sometimes gets picked up as "enter"
     "(char) ": "c",
     "(dozen) ": "d",        # "does" is like "geez", "drax" is like "right". "dam" is like down. "dim" is like "ding". "dug" is like dot. "des" is like "this". "desk" is like "verse", "dose", "this".
     "(ebike) ": "e",        # "ebike" is like "end black", "evo" isn't getting picked up! careful of x, see, end, as, up
@@ -135,23 +135,39 @@ class KeyReader :
 # Allow custom combo length
 combo = 3
 capitalPercentage = 0
-if len(sys.argv) > 1:
-    combo = int(sys.argv[1])
-if len(sys.argv) > 2:
-    capitalPercentage = int(sys.argv[2])
+showAlphabetically = False
+startOfArgs = 1
+if len(sys.argv) > 1 and (sys.argv[1] == "-a" or sys.argv[2] == "-a"):
+    showAlphabetically = True
+    startOfArgs = startOfArgs+1
+if len(sys.argv) > startOfArgs:
+    combo = int(sys.argv[startOfArgs])
+if len(sys.argv) > startOfArgs+1:
+    capitalPercentage = int(sys.argv[startOfArgs+1])
 
 print "Press the", combo, "shown keys as fast as you can, using either a speech recognition engine or a physical keyboard!"
+
+# Sort the dictionary alphabetically, to allow showing characters in alphabetical order if desired.
+#letterMap = sorted(letterMap.iterkeys())
+letterMap = sorted(letterMap.items(), key=operator.itemgetter(1))
 
 keyreader = KeyReader(echo=True, block=True)
 tallyCorrect = 0
 tallyWrong = 0
 averagedSpeed = -1    # Initialize with the first measurement
+nextAlphabet = 0
 
 while (True):
     truth = ""
     for i in xrange(combo):
-        r = random.randint(0, len(letterMap) - 1)    # Pick a random letter
-        (word, char) = letterMap.items()[r]
+        if showAlphabetically:
+            r = nextAlphabet         # Pick the next letter
+            nextAlphabet = nextAlphabet + 1
+            if nextAlphabet >= len(letterMap):
+                nextAlphabet = 0
+        else:
+            r = random.randint(0, len(letterMap) - 1)    # Pick a random letter
+        (word, char) = letterMap[r]
         if random.randint(0, 100) < capitalPercentage:    # Occasionally use a capital letter
             char = char.upper()
             word = word.upper()
