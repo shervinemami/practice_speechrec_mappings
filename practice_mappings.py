@@ -17,7 +17,7 @@ letterMap = {
     "(hotel) ": "h",        # careful of 8 and quote
     "(itchy) ": "i",        # itchy is like teach
     "(julia) ": "j",
-    "(krux) ": "k",        # careful of equal, colon and queen, geez.  My "kaput" is like "up". My "kilo" sometimes gets picked up as "killer"
+    "(krife) ": "k",        #kidding? krog? # krux is like plus. careful of equal, colon, capital queen, geez.  My "kaput" is like "up". My "kilo" sometimes gets picked up as "killer"
     "(lazy) ": "l",      # My "lima" is like "clean" and "end". My L sometimes gets picked up as "help". "L" is like Dragon keyword "spell" :-(
     "(miley) ": "m",       # Mosfet is somehow like "plus" and "space"! # Mix is a bit like minus?  # My "mike" is similar to "my"
     "(newish) ": "n",   # noosh is maybe like mosfet. niche is like unix. # nose?  "Nippy" is like "up"
@@ -25,15 +25,16 @@ letterMap = {
     "(pingu) ": "p",     # My "pom" is like "upon" and "up home"
     "(queen) ": "q",    # "queen" is like "clean"
     "(rude) ": "r",          # rolex is like krux. "rod" is like "right"
-    "(salty) ": "s",     # salt? # "sook" is like "up", "size" is like "keys". careful of snake, space,
+    "(salty) ": "s",     # "sook" is like "up", "size" is like "keys". careful of snake, space,
     "(trish) ": "t",        # tricky is like keys # teach is like itchy
     "(unix) ": "u",          # "urge"? # careful of yang
     "(video) ": "v",            # My "vix" is like "mix". My "vax" is like "backspace". My "van" is a bit like "then"
-    "(winter) ": "w",              # My "wes" is like "worse"
+    "(wintel) ": "w",              # My "wes" is like "worse"
     "(x-ray) ": "x",
-    "(yazzam) ": "y",     # yeast is like left. yellow is like "end left", yoke is like black. # "yang" is like "end". Careful of letter "u", home. "why" is like "white" that is like "why tay"
-    "(zooch) ": "z",     # zener is like insert. zulu isn't getting picked up! "zed" is like "said" and "set"
+    "(yazzam) ": "y",     # yazzam is like home, yeast is like left. yellow is like "end left", yoke is like black. # "yang" is like "end". Careful of letter "u", home. "why" is like "white" that is like "why tay"
+    "(zooki) ": "z",     # zood? zooki? zooch & zener are like insert! zulu isn't getting picked up! "zed" is like "said" and "set"
 }
+
 #--------------------------------------
 
 
@@ -137,7 +138,7 @@ combo = 3
 capitalPercentage = 0
 showAlphabetically = False
 startOfArgs = 1
-if len(sys.argv) > 1 and (sys.argv[1] == "-a" or sys.argv[2] == "-a"):
+if len(sys.argv) > 1 and sys.argv[1] == "-a":
     showAlphabetically = True
     startOfArgs = startOfArgs+1
 if len(sys.argv) > startOfArgs:
