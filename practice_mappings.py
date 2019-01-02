@@ -3,10 +3,6 @@
 # By Shervin Emami 2019, "http://shervinemami.info/".
 # Tested on Ubuntu 18.04 using python 2.7.
 
-import random
-import time
-import operator
-
 
 #--------------------------------------
 # INSERT LETTER MAP HERE:
@@ -41,6 +37,10 @@ letterMap = {
 #--------------------------------------
 
 
+
+import random
+import time
+import operator
 
 #---------------------------------------
 # Keyboard input code, taken from "https://github.com/akkana/scripts/blob/master/keyreader.py" on Jan 1st 2019.
