@@ -3,45 +3,17 @@
 # By Shervin Emami 2019, "http://shervinemami.info/".
 # Tested on Ubuntu 18.04 using python 2.7.
 
-
-#--------------------------------------
-# INSERT LETTER MAP HERE:
-letterMap = {
-    "(acid) ": "a",         # alpha is a bit like up. axis is like backspace. "(aim|and) ": "a",        # careful of 8, @, lace, lack. My "aim" sometimes gets picked up as "and".
-    "(brain) ": "b",        #  "brown" is like down. "black" is like "ebike", "best" sometimes gets picked up as "this" or "guess". "B|the" sometimes gets picked up as "enter"
-    "(char) ": "c",
-    "(dozen) ": "d",        # "does" is like "geez", "drax" is like "right". "dam" is like down. "dim" is like "ding". "dug" is like dot. "des" is like "this". "desk" is like "verse", "dose", "this".
-    "(ebike) ": "e",        # "ebike" is like "end black", "evo" isn't getting picked up! careful of x, see, end, as, up
-    "(foxy) ": "f",        # My "fox" is like "false" # careful of F1, F2 ...
-    "(golf) ": "g",             # My "gang" is like "can"
-    "(hotel) ": "h",        # careful of 8 and quote
-    "(itchy) ": "i",        # itchy is like teach
-    "(julia) ": "j",
-    "(krife) ": "k",        #kidding? krog? # krux is like plus. careful of equal, colon, capital queen, geez.  My "kaput" is like "up". My "kilo" sometimes gets picked up as "killer"
-    "(lazy) ": "l",      # My "lima" is like "clean" and "end". My L sometimes gets picked up as "help". "L" is like Dragon keyword "spell" :-(
-    "(miley) ": "m",       # Mosfet is somehow like "plus" and "space"! # Mix is a bit like minus?  # My "mike" is similar to "my"
-    "(newish) ": "n",   # noosh is maybe like mosfet. niche is like unix. # nose?  "Nippy" is like "up"
-    "(omez) ": "o",     # orange is like end. oryx is like "echo".  My "osh" is like "as". My "omar" is like "home up"
-    "(pingu) ": "p",     # My "pom" is like "upon" and "up home"
-    "(queen) ": "q",    # "queen" is like "clean"
-    "(rude) ": "r",          # rolex is like krux. "rod" is like "right"
-    "(salty) ": "s",     # "sook" is like "up", "size" is like "keys". careful of snake, space,
-    "(trish) ": "t",        # tricky is like keys # teach is like itchy
-    "(unix) ": "u",          # "urge"? # careful of yang
-    "(video) ": "v",            # My "vix" is like "mix". My "vax" is like "backspace". My "van" is a bit like "then"
-    "(wintel) ": "w",              # My "wes" is like "worse"
-    "(x-ray) ": "x",
-    "(yazzam) ": "y",     # yazzam is like home, yeast is like left. yellow is like "end left", yoke is like black. # "yang" is like "end". Careful of letter "u", home. "why" is like "white" that is like "why tay"
-    "(zooki) ": "z",     # zood? zooki? zooch & zener are like insert! zulu isn't getting picked up! "zed" is like "said" and "set"
-}
-
-#--------------------------------------
-
-
-
+import sys
 import random
 import time
 import operator
+
+
+# Import the "letterMap" dictionary from the "lettermap.py" file that's in the MacroSystem folder.
+# Make sure you adjust this path to where it's located on your machine, relative to this script.
+sys.path.append('../MacroSystem')
+from lettermap import letterMap
+
 
 #---------------------------------------
 # Keyboard input code, taken from "https://github.com/akkana/scripts/blob/master/keyreader.py" on Jan 1st 2019.
@@ -187,13 +159,14 @@ while (True):
     # Perform a running average alpha filter to smoothen the result but give more priority to recent results
     if averagedSpeed < 0:
         averagedSpeed = rawSpeed
-    alpha = 0.3    # The closer this is to 1.0, the stronger the filtering that will be applied.
+    alpha = 0.5    # The closer this is to 1.0, the stronger the filtering that will be applied.
     averagedSpeed = ((1.0 - alpha) * rawSpeed) + (alpha * averagedSpeed)
 
     print
     if typed == truth:
         tallyCorrect = tallyCorrect+1
-        print "Correct.                                  Tally:", tallyCorrect, "correct,", tallyWrong, "wrong. Speed: %.2f s/key" % averagedSpeed
+        wordErrorRate = 100.0 * (tallyWrong / float(tallyCorrect + tallyWrong))
+        print "Correct.                                  Tally: %d correct = %.1f%% WER. Speed: %.2f s/key" % (tallyCorrect, wordErrorRate, averagedSpeed)
     else:
         tallyWrong = tallyWrong+1
         print "### WRONG! ###### ", truth, typed, "############ Tally:", tallyCorrect, "correct,", tallyWrong, "wrong. ###################################"
