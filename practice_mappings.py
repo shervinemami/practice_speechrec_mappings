@@ -144,7 +144,7 @@ while (True):
         if random.randint(0, 100) < capitalPercentage:    # Occasionally use a capital letter
             char = char.upper()
             word = word.upper()
-        print (word, char)
+        print "%16s %16s" % (word, char)
         truth += char
 
     timeStart = time.time()
