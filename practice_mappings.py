@@ -16,14 +16,14 @@ from lettermap import letterMap
 
 # Also potentially include symbols, not just alphabet letters
 symbolMap = {
-        'less than':           "<",
-        'curly brace':         "{",
-        'square brace':        "[",
-        'round bracket':       "(",
-        'greater than':        ">",
-        'close curly brace':   "}",
-        'close square brace':  "]",
-        'close round bracket': ")",
+        'less than':            "<",
+        'curly brace':          "{",
+        'square bracket':       "[",
+        'round bracket':        "(",
+        'greater than':         ">",
+        'close curly brace':    "}",
+        'close square bracket': "]",
+        'close round bracket':  ")",
 }
 
 
