@@ -14,6 +14,18 @@ import operator
 sys.path.append('../MacroSystem')
 from lettermap import letterMap
 
+# Also potentially include symbols, not just alphabet letters
+symbolMap = {
+        'less than':           "<",
+        'curly brace':         "{",
+        'square brace':        "[",
+        'round bracket':       "(",
+        'greater than':        ">",
+        'close curly brace':   "}",
+        'close square brace':  "]",
+        'close round bracket': ")",
+}
+
 
 #---------------------------------------
 # Keyboard input code, taken from "https://github.com/akkana/scripts/blob/master/keyreader.py" on Jan 1st 2019.
@@ -109,9 +121,13 @@ class KeyReader :
 combo = 3
 capitalPercentage = 0
 showAlphabetically = False
+includeSymbols = False
 startOfArgs = 1
-if len(sys.argv) > 1 and sys.argv[1] == "-a":
+if len(sys.argv) > startOfArgs and sys.argv[startOfArgs] == "-a":
     showAlphabetically = True
+    startOfArgs = startOfArgs+1
+if len(sys.argv) > startOfArgs and sys.argv[startOfArgs] == "-s":
+    includeSymbols = True
     startOfArgs = startOfArgs+1
 if len(sys.argv) > startOfArgs:
     combo = int(sys.argv[startOfArgs])
@@ -123,6 +139,11 @@ print "Press the", combo, "shown keys as fast as you can, using either a speech 
 # Sort the dictionary alphabetically, to allow showing characters in alphabetical order if desired.
 #letterMap = sorted(letterMap.iterkeys())
 letterMap = sorted(letterMap.items(), key=operator.itemgetter(1))
+
+# Possibly include symbols in addition to letters.
+if includeSymbols:
+    symbolMapAsList = sorted(symbolMap.items(), key=operator.itemgetter(1))
+    letterMap.extend(symbolMapAsList)
 
 keyreader = KeyReader(echo=True, block=True)
 tallyCorrect = 0
@@ -144,7 +165,7 @@ while (True):
         if random.randint(0, 100) < capitalPercentage:    # Occasionally use a capital letter
             char = char.upper()
             word = word.upper()
-        print "%16s %16s" % (word, char)
+        print "%25s %25s" % (word, char)
         truth += char
 
     timeStart = time.time()

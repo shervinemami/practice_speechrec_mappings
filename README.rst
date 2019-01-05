@@ -29,10 +29,11 @@ Usage:
 
 .. code:: shell
 
-    python practice_mappings.py [-a] [<combo> [<capitals>]]
+    python practice_mappings.py [-a] [-s] [<combo> [<capitals>]]
 
     where:
         -a         Sort the characters alphabetically instead of randomly
+        -s         Include some symbols in the mix, not just alphabet letters
         <combo>    How many characters you will try to say at the same time. Default is 3.
         <capitals> Percentage of characters that will be a capital letter. Default is 0.
 
@@ -41,7 +42,7 @@ eg:
 .. code:: shell
 
     python practice_mappings.py
-    python practice_mappings.py -a 5 20
+    python practice_mappings.py -a -s 5 20
 
 
 Sample output:
