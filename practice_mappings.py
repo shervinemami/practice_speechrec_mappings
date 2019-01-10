@@ -21,9 +21,9 @@ symbolMap = {
         'square bracket':       "[",
         'round bracket':        "(",
         'greater than':         ">",
-        'close curly brace':    "}",
-        'close square bracket': "]",
-        'close round bracket':  ")",
+        'close curly':    "}",
+        'close square': "]",
+        'close round':  ")",
 }
 
 
