@@ -3,6 +3,9 @@
 # By Shervin Emami 2019, "http://shervinemami.info/".
 # Tested on Ubuntu 18.04 using python 2.7.
 
+# Python 2/3 compatibility
+from __future__ import print_function
+
 import sys
 import random
 import time
@@ -15,17 +18,28 @@ sys.path.append('../MacroSystem')
 from lettermap import letterMap
 
 # Also potentially include symbols, not just alphabet letters
-symbolMap = {
-        'less than':            "<",
-        'curly brace':          "{",
-        'square bracket':       "[",
-        'round bracket':        "(",
-        'greater than':         ">",
-        'close curly':    "}",
-        'close square': "]",
-        'close round':  ")",
-}
+try:
+    # Long version of punctuation characters, that are slower but more reliable, hence good for general use at any time:
+    from punctuationmap import longPunctuationMap
+except:
+    pass
 
+crucialMap = {
+    "space":    " ",
+    "dot":      ".",
+}
+numberMap = {
+    "zero":     "0",
+    "one":      "1",
+    "two":      "2",
+    "three":    "3",
+    "four":     "4",
+    "five":     "5",
+    "six":      "6",
+    "seven":    "7",
+    "eight":    "8",
+    "nine":     "9",
+}
 
 #---------------------------------------
 # Keyboard input code, taken from "https://github.com/akkana/scripts/blob/master/keyreader.py" on Jan 1st 2019.
@@ -122,6 +136,10 @@ combo = 3
 capitalPercentage = 0
 showAlphabetically = False
 includeSymbols = False
+print("usage: python practice_mappings.py [-a] [-s] [<combo> [<capitals>]]")
+print("See 'https://github.com/shervinemami/practice_speechrec_mappings' for more details")
+print("")
+
 startOfArgs = 1
 if len(sys.argv) > startOfArgs and sys.argv[startOfArgs] == "-a":
     showAlphabetically = True
@@ -134,16 +152,30 @@ if len(sys.argv) > startOfArgs:
 if len(sys.argv) > startOfArgs+1:
     capitalPercentage = int(sys.argv[startOfArgs+1])
 
-print "Press the", combo, "shown keys as fast as you can, using either a speech recognition engine or a physical keyboard!"
+print("Press the "+ str(combo) + " shown keys as fast as you can, using either a speech recognition engine or a physical keyboard!")
 
 # Sort the dictionary alphabetically, to allow showing characters in alphabetical order if desired.
 #letterMap = sorted(letterMap.iterkeys())
 letterMap = sorted(letterMap.items(), key=operator.itemgetter(1))
+numbersAsList = sorted(numberMap.items(), key=operator.itemgetter(1))
+letterMap.extend(numbersAsList)
+# Include the crucial list twice, so they will get chosen more often than other symbols.
+crucialAsList = sorted(crucialMap.items(), key=operator.itemgetter(1))
+letterMap.extend(crucialAsList)
+letterMap.extend(crucialAsList)
 
 # Possibly include symbols in addition to letters.
 if includeSymbols:
-    symbolMapAsList = sorted(symbolMap.items(), key=operator.itemgetter(1))
-    letterMap.extend(symbolMapAsList)
+    # Add double entries for the main characters, so they will get chosen more often than the other symbols.
+    letterMap.extend(letterMap)
+    # Other symbols
+    try:
+        symbolsAsList = sorted(longPunctuationMap.items(), key=operator.itemgetter(1))
+        letterMap.extend(symbolsAsList)
+        #print("SYMBOLS", symbolsAsList)
+        #print("LETTERMAP", letterMap)
+    except:
+        print("Warning: Couldn't find extra symbol files")
 
 keyreader = KeyReader(echo=True, block=True)
 tallyCorrect = 0
@@ -153,7 +185,9 @@ nextAlphabet = 0
 
 while (True):
     truth = ""
-    for i in xrange(combo):
+    chars = []
+    words = []
+    for i in range(combo):
         if showAlphabetically:
             r = nextAlphabet         # Pick the next letter
             nextAlphabet = nextAlphabet + 1
@@ -165,13 +199,24 @@ while (True):
         if random.randint(0, 100) < capitalPercentage:    # Occasionally use a capital letter
             char = char.upper()
             word = word.upper()
-        print "%25s %25s" % (word, char)
+        #print("%25s %25s" % (word, char))
+        chars.append(char)
+        words.append(word)
         truth += char
+
+    # Print all the characters on a single line
+    for i in range(combo):
+        print(chars[i], end='')
+    print("                                        ", end='')
+    for i in range(combo):
+        print(words[i], " ", end='')
+    print()    
+
 
     timeStart = time.time()
 
     typed = ""
-    for i in xrange(combo):
+    for i in range(combo):
         key = keyreader.getch()
         typed += key
 
@@ -183,12 +228,12 @@ while (True):
     alpha = 0.5    # The closer this is to 1.0, the stronger the filtering that will be applied.
     averagedSpeed = ((1.0 - alpha) * rawSpeed) + (alpha * averagedSpeed)
 
-    print
+    print()
     if typed == truth:
         tallyCorrect = tallyCorrect+1
         wordErrorRate = 100.0 * (tallyWrong / float(tallyCorrect + tallyWrong))
-        print "Correct.                                  Tally: %d correct = %.1f%% WER. Speed: %.2f s/key" % (tallyCorrect, wordErrorRate, averagedSpeed)
+        print("Correct.                                  Tally: %d correct = %.1f%% WER. Speed: %.2f s/key" % (tallyCorrect, wordErrorRate, averagedSpeed))
     else:
         tallyWrong = tallyWrong+1
-        print "### WRONG! ###### ", truth, typed, "############ Tally:", tallyCorrect, "correct,", tallyWrong, "wrong. ###################################"
-    print
+        print("### WRONG! ###### ", truth, typed, "############ Tally:", tallyCorrect, "correct,", tallyWrong, "wrong. ###################################")
+    print()
