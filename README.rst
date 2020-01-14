@@ -86,5 +86,13 @@ Sample output:
     
     
     
-To use your own grammar and not myne, you'll need to copy the alphabet character mapping from your grammar into the
-Python script (in the section marked "INSERT LETTER MAP HERE").
+To use your own grammar and not myne, you'll need to put your alphabet character mapping into file "letterMap.py", such as:
+.. code:: shell
+    letterMap = { 
+        "acid": "a",
+        "bony": "b",
+        "char": "c",
+        ...
+    }
+
+
