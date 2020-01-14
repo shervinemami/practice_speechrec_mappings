@@ -42,7 +42,7 @@ eg:
 .. code:: shell
 
     python practice_mappings.py
-    python practice_mappings.py -a -s 5 20
+    python practice_mappings.py -s 4 10
 
 
 Sample output:
@@ -50,40 +50,25 @@ Sample output:
 
 .. code:: shell
 
-    $ ./practice_mappings.py 5
-    Press the 5 shown keys as fast as you can, using either a speech recognition engine or a physical keyboard!
-    ('(video) ', 'v')
-    ('(queen) ', 'q')
-    ('(rude) ', 'r')
-    ('(foxy) ', 'f')
-    ('(hotel) ', 'h')
-    vqrfh
-    Correct.                                  Tally: 1 correct, 0 wrong. Speed: 1.66 s/key
-    
-    ('(char) ', 'c')
-    ('(krux) ', 'k')
-    ('(foxy) ', 'f')
-    ('(queen) ', 'q')
-    ('(acid) ', 'a')
-    ckfqa
-    Correct.                                  Tally: 2 correct, 0 wrong. Speed: 0.76 s/key
-    
-    ('(pingu) ', 'p')
-    ('(lazy) ', 'l')
-    ('(golf) ', 'g')
-    ('(video) ', 'v')
-    ('(ebike) ', 'e')
-    plvee
-    ### WRONG! ######  plgve plvee ############ Tally: 2 correct, 1 wrong. ###################################
-    
-    ('(char) ', 'c')
-    ('(rude) ', 'r')
-    ('(miley) ', 'm')
-    ('(omez) ', 'o')
-    ('(yazzam) ', 'y')
-    crmoy
-    Correct.                                  Tally: 3 correct, 1 wrong. Speed: 0.68 s/key
-    
+    $ python ./practice_mappings.py -s 3 10
+    usage: python practice_mappings.py [-a] [-s] [<combo> [<capitals>]]
+    See 'https://github.com/shervinemami/practice_speechrec_mappings' for more details
+
+    Press the 3 shown keys as fast as you can, using either a speech recognition engine or a physical keyboard!
+    zlk                                        zimeesi  lazy  krife  
+    zlk
+    Correct.                                  Tally: 1 correct = 0.0% WER. Speed: 0.58 s/key
+
+    1b                                         one  bony  space  
+    1b 
+    Correct.                                  Tally: 2 correct = 0.0% WER. Speed: 0.68 s/key
+
+    yl4                                        yeelax  lazy  four  
+    yl5
+    ### WRONG! ######  yl4 yl5 ############ Tally: 2 correct, 1 wrong. ###################################
+
+    vis                                        video  itchy  salty    
+    ...
     
     
 To use your own grammar and not myne, you'll need to put your alphabet character mapping into file "letterMap.py", such as:
