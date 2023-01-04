@@ -1,28 +1,65 @@
 #!/usr/bin/env python
-# A very mininal game that helps practice names of keys for Dragonfly speech recognition grammars.
-# By Shervin Emami 2019, "http://shervinemami.info/".
-# Tested on Ubuntu 18.04 using python 2.7.
+# A very mininal game that helps practice names of keys for Dragonfly or knausj Talon speech recognition grammars.
+# By Shervin Emami 2023, "http://shervinemami.com/".
+# Tested on Ubuntu 22.04 using python 3.10.
 
 # Python 2/3 compatibility
 from __future__ import print_function
 
+import os
 import sys
 import random
 import time
 import operator
 
 
-# Import the "letterMap" dictionary from the "lettermap.py" file that's in the MacroSystem folder.
-# Make sure you adjust this path to where it's located on your machine, relative to this script.
-sys.path.append('../MacroSystem')
-from lettermap import letterMap
+# Process the command-line args before doing anything else, so we can load files based on the args.
+print("usage: python practice_mappings.py [-dragonfly] [-alphabetical] [-symbols] [<combo-length> [<capitals-percentage>]]")
+print("By default, it will run as Talon knausj mode. Or to use Dragonfly mode, add '-dragonfly'.") 
+print("See 'https://github.com/shervinemami/practice_speechrec_mappings' for more details")
+print("")
+# Default values
+combo = 3   # Allow custom combo length
+capitalPercentage = 0
+showAlphabetically = False
+includeSymbols = False
+useDragonflyMappings = False
+# Parse commandline args
+startOfArgs = 1
+if len(sys.argv) > startOfArgs and sys.argv[startOfArgs] == "-dragonfly":
+    useDragonflyMappings = True
+    startOfArgs = startOfArgs+1
+if len(sys.argv) > startOfArgs and sys.argv[startOfArgs] == "-alphabetical":
+    showAlphabetically = True
+    startOfArgs = startOfArgs+1
+if len(sys.argv) > startOfArgs and sys.argv[startOfArgs] == "-symbols":
+    includeSymbols = True
+    startOfArgs = startOfArgs+1
+if len(sys.argv) > startOfArgs:
+    combo = int(sys.argv[startOfArgs])
+if len(sys.argv) > startOfArgs+1:
+    capitalPercentage = int(sys.argv[startOfArgs+1])
 
-# Also potentially include symbols, not just alphabet letters
-try:
-    # Long version of punctuation characters, that are slower but more reliable, hence good for general use at any time:
-    from punctuationmap import longPunctuationMap
-except:
-    pass
+
+if useDragonflyMappings:
+    # Import the "letterMap" dictionary from the "lettermap.py" file that's in the MacroSystem folder.
+    # Make sure you adjust this path to where it's located on your machine, relative to this script.
+    sys.path.append('../MacroSystem')
+    from lettermap import letterMap
+
+    # Also potentially include symbols, not just alphabet letters
+    try:
+        # Long version of punctuation characters, that are slower but more reliable, hence good for general use at any time:
+        from punctuationmap import longPunctuationMap
+    except:
+        pass
+else:
+    # Talon filenames. You can use "~" to refer to the Talon user folder.
+    CSV_filename = "~/.talon/user/knausj_talon/settings/alphabet.csv"
+    keys_filename = "~/.talon/user/knausj_talon/core/keys/keys.py"
+
+    import csv
+
 
 crucialMap = {
     "space":    " ",
@@ -43,8 +80,6 @@ numberMap = {
 
 #---------------------------------------
 # Keyboard input code, taken from "https://github.com/akkana/scripts/blob/master/keyreader.py" on Jan 1st 2019.
-import sys
-import os
 import termios, fcntl
 import select
 
@@ -129,30 +164,80 @@ class KeyReader :
 #--------------------------------------
 
 
+# Try to load a given Talon alphabet CSV file, potentially ignoring the header (first row)
+def load_talon_lettermap(CSV_filename):
+    CSV_filename = os.path.expanduser(CSV_filename)   # Allow to hard-code "~" in this source file as the user's home folder
+
+    new_lettermap = {}  # Create an empty Dictionary
+    with open(CSV_filename, newline='') as csvfile:
+        filereader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        for row in filereader:
+            if ("Spoken Form" not in row) and (len(row) >= 2):
+                #print(row[0], "=== ", row[1])
+                # Note that in Shervin's Dragonfly lettermap file, the phrase is the 1st word and the character is the 2nd word,
+                # but in Talon's alphabet csv file, the character is the 1st word and the phrase is the 2nd word.
+                # So we swap them here.
+                new_lettermap[row[1]] = row[0]
+    return new_lettermap
+
+# Pull the dictionary mappings from the following lines in the file until a "}" line is found.
+# Stores the mappings directly into the dict in-place.
+# Assumes pyfile has already been opened and the file pointer is now at a new line containing the dictionary mappings (ie: after a "{").
+def extract_dictionary_from_part_of_python_file(pyfile, d={}):
+    # Scan the line to find the phrase, and the symbol it maps to.
+    # The line is typically something like the string: ' "question mark": "?",\n'
+    for line in pyfile:
+        # Remove whitespace at the start of the string, then see if it starts with a '"' character.
+        line = line.lstrip()
+        #print("line: ", line)
+        if len(line) >= 6 and line[0] == '"':
+            # Make sure this phrase starts with an actual alphatical letter, not a symbol such as ','.
+            if line[1].isalpha():
+                # Remove the comma & whitespace & line-ending at the end of the string, and then split up the string by ':'
+                # This should generate something like: ['"question mark"', ' "?"']
+                words = line.rstrip(', \n').split(':')
+                if len(words) >= 2 and len(words[0]) >= 1 and len(words[1]) >= 1:
+                    phrase = words[0].lstrip('"').rstrip('"')
+                    symbol = words[1].lstrip(' "').rstrip('"')
+                    if len(phrase) >= 1 and len(symbol) >= 1:
+                        #print("phrase=<" + phrase + ">, \t symbol=<" + symbol + ">.")
+                        # Add the mapping to our dictionary.
+                        d[phrase] = symbol
+        elif "}" in line:
+            break
+
+# Try to load the symbolmap from a given Talon keys.py file
+def load_talon_symbolmap(filename):
+    filename = os.path.expanduser(filename)     # Allow to hard-code "~" in this source file as the user's home folder
+
+    new_symbolmap = {}  # Create an empty Dictionary
+    with open(filename, 'r') as pyfile:
+        current_line = ""
+        # Skip all lines in the Python file until we find the "punctuation_words" declaration line.
+        for line in pyfile:
+            if "punctuation_words = {" in line:
+                break
+        extract_dictionary_from_part_of_python_file(pyfile, new_symbolmap)
+        # Skip all lines in the Python file until we find the "symbol_key_words" declaration line.
+        for line in pyfile:
+            if "symbol_key_words = {" in line:
+                break
+        extract_dictionary_from_part_of_python_file(pyfile, new_symbolmap)
+    return new_symbolmap
+#--------------------------------------
 
 
-# Allow custom combo length
-combo = 3
-capitalPercentage = 0
-showAlphabetically = False
-includeSymbols = False
-print("usage: python practice_mappings.py [-a] [-s] [<combo> [<capitals>]]")
-print("See 'https://github.com/shervinemami/practice_speechrec_mappings' for more details")
-print("")
+if not useDragonflyMappings:
+    # First try loading the alphabet CSV into a dictionary.
+    new_lettermap = load_talon_lettermap(CSV_filename)
+    if len(new_lettermap) > 0:
+        letterMap = new_lettermap
 
-startOfArgs = 1
-if len(sys.argv) > startOfArgs and sys.argv[startOfArgs] == "-a":
-    showAlphabetically = True
-    startOfArgs = startOfArgs+1
-if len(sys.argv) > startOfArgs and sys.argv[startOfArgs] == "-s":
-    includeSymbols = True
-    startOfArgs = startOfArgs+1
-if len(sys.argv) > startOfArgs:
-    combo = int(sys.argv[startOfArgs])
-if len(sys.argv) > startOfArgs+1:
-    capitalPercentage = int(sys.argv[startOfArgs+1])
-
-print("Press the "+ str(combo) + " shown keys as fast as you can, using either a speech recognition engine or a physical keyboard!")
+    # Now try converting the "punctuation_words" and "" definitions in the user's "keys.py" file into a dictionary.
+    # Note that we aren't importing the python file directly, because that would require importing talon, which requires integration. 
+    new_symbolmap = load_talon_symbolmap(keys_filename)
+    if len(new_symbolmap) > 0:
+        longPunctuationMap = new_symbolmap
 
 # Sort the dictionary alphabetically, to allow showing characters in alphabetical order if desired.
 #letterMap = sorted(letterMap.iterkeys())
@@ -176,6 +261,9 @@ if includeSymbols:
         #print("LETTERMAP", letterMap)
     except:
         print("Warning: Couldn't find extra symbol files")
+
+
+print("Press the "+ str(combo) + " shown keys as fast as you can, using either a speech recognition engine or a physical keyboard!")
 
 keyreader = KeyReader(echo=True, block=True)
 tallyCorrect = 0
@@ -237,3 +325,4 @@ while (True):
         tallyWrong = tallyWrong+1
         print("### WRONG! ###### ", truth, typed, "############ Tally:", tallyCorrect, "correct,", tallyWrong, "wrong. ###################################")
     print()
+
