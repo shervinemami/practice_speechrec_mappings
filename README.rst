@@ -32,7 +32,7 @@ Note that there's also a separate "measure_typing_rate.py" program that is inten
 Usage:
 ----------------
 
-.. code:: shell
+.. code::
 
     python practice_mappings.py [-dragonfly] [-alphabetical] [-symbols] [<combo-length> [<capitals-percentage>]]
 
@@ -55,6 +55,7 @@ Sample output:
 ----------------
 
 Talon mode:
+
 .. code:: shell
 
     $ python ./practice_mappings.py -symbols 3 10
@@ -79,6 +80,7 @@ Talon mode:
     ...
 
 Dragonfly mode:
+
 .. code:: shell
 
     $ python ./practice_mappings.py -dragonfly -symbols 3 10
@@ -95,9 +97,12 @@ Dragonfly mode:
     
 To use your own Talon grammar, make sure you installed knausj into "~/.talon/user/knausj_talon".
 In Talon mode it will use these 2 files on your computer:
+
 .. code:: shell
+
     ~/.talon/user/knausj_talon/settings/alphabet.csv
     ~/.talon/user/knausj_talon/core/keys/keys.py
+
 If you've installed them in different locations on your computer, you'll need to modify these 2 file locations in 'practice_mappings.py'.
 
 Or for Dragonfly mode, to use your own Dragonfly grammar and not myne, you'll need to put your alphabet character mapping into file "letterMap.py", such as:
