@@ -34,7 +34,7 @@ Usage:
 
 .. code::
 
-    python practice_mappings.py [-dragonfly] [-alphabetical] [-symbols] [<combo-length> [<capitals-percentage>]]
+    python practice_mappings.py [-dragonfly] [-alphabetical] [-symbols] [<combo-length> [<capitals-percentage> [<random-seed>]]]
 
     where:
         -dragonfly            Use Dragonfly mode ('lettermap.py' + 'punctuationmap.py'). Default is Talon mode.
@@ -42,6 +42,7 @@ Usage:
         -symbols              Include some symbols in the mix. Default is just alphabet letters, not symbols.
         <combo-length>        How many characters you will try to say at the same time. Default is 3.
         <capitals-percentage> Percentage of characters that will be a capital letter. Default is 0.
+        <random-seed>         Allows following a determinstic sequence of random values. Default is None (ie: system timer).
 
 eg:
 
@@ -49,6 +50,7 @@ eg:
 
     python practice_mappings.py
     python practice_mappings.py -symbols 5 20
+    python practice_mappings.py -dragonfly -symbols 5 20 12345
 
 
 Sample output:
