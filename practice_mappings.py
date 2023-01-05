@@ -13,17 +13,20 @@ import time
 import operator
 
 
-# Process the command-line args before doing anything else, so we can load files based on the args.
-print("usage: python practice_mappings.py [-dragonfly] [-alphabetical] [-symbols] [<combo-length> [<capitals-percentage>]]")
-print("By default, it will run as Talon knausj mode. Or to use Dragonfly mode, add '-dragonfly'.") 
-print("See 'https://github.com/shervinemami/practice_speechrec_mappings' for more details")
-print("")
-# Default values
+# Default settings
 combo = 3   # Allow custom combo length
 capitalPercentage = 0
+randomseed = None   # Default to using system timer as the random seed
 showAlphabetically = False
 includeSymbols = False
 useDragonflyMappings = False
+# Process the command-line args before doing anything else, so we can load files based on the args.
+print("usage: python practice_mappings.py [-dragonfly] [-alphabetical] [-symbols] [<combo-length=" \
+         + str(combo) + "> [<capitals-percentage=" + str(capitalPercentage) + "> [<random-seed=" \
+         + str(randomseed) + ">]]]")
+print("By default, it will run as Talon knausj mode. Or to use Dragonfly mode, add '-dragonfly'.") 
+print("See 'https://github.com/shervinemami/practice_speechrec_mappings' for more details")
+print("")
 # Parse commandline args
 startOfArgs = 1
 if len(sys.argv) > startOfArgs and sys.argv[startOfArgs] == "-dragonfly":
@@ -37,8 +40,16 @@ if len(sys.argv) > startOfArgs and sys.argv[startOfArgs] == "-symbols":
     startOfArgs = startOfArgs+1
 if len(sys.argv) > startOfArgs:
     combo = int(sys.argv[startOfArgs])
-if len(sys.argv) > startOfArgs+1:
-    capitalPercentage = int(sys.argv[startOfArgs+1])
+    print("Using combos of length", combo)
+    startOfArgs = startOfArgs+1
+if len(sys.argv) > startOfArgs:
+    capitalPercentage = int(sys.argv[startOfArgs])
+    print("Using capital letters", capitalPercentage, "% of the time")
+    startOfArgs = startOfArgs+1
+if len(sys.argv) > startOfArgs:
+    randomseed = int(sys.argv[startOfArgs])
+    print("Using", randomseed, "as the random seed instead of the current time")
+    random.seed(randomseed)
 
 
 if useDragonflyMappings:
