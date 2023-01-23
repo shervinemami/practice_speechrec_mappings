@@ -34,23 +34,32 @@ Usage:
 
 .. code::
 
-    python practice_mappings.py [-dragonfly] [-alphabetical] [-symbols] [<combo-length> [<capitals-percentage> [<random-seed>]]]
+   usage: practice_mappings.py [options] [combo_length]
 
-    where:
-        -dragonfly            Use Dragonfly mode ('lettermap.py' + 'punctuationmap.py'). Default is Talon mode.
-        -alphabetical         Sort the characters alphabetically. Default is random (ie: unsorted).
-        -symbols              Include some symbols in the mix. Default is just alphabet letters, not symbols.
-        <combo-length>        How many characters you will try to say at the same time. Default is 3.
-        <capitals-percentage> Percentage of characters that will be a capital letter. Default is 0.
-        <random-seed>         Allows following a determinstic sequence of random values. Default is None (ie: system timer).
+    Practice keyboard mappings, such as to practice voice coding. By Shervin Emami (http://shervinemami.com), 2023
+
+    positional arguments:
+      combo_length          How many characters you will try to say at the same time. Default is 3.
+
+    options:
+      -h, --help            show this help message and exit
+      -d, --dragonfly       Use Dragonfly mode ("lettermap.py" + "punctuationmap.py"). Default is Talon mode.
+      -a, --alphabetical    Sort the characters alphabetically. Default is random (ie: unsorted).
+      -s, --symbols         Include some symbols in the mix. Default is just alphabet letters, not symbols.
+      -n, --no_numbers      Skip numerals, only use letters (and possibly symbols). Default is to include numbers.
+      -c, --no_crucial      Skip crucial symbols (commas and spaces). Default is to include crucial symbols.
+      -p CAPITALS_PERCENTAGE, --capitals_percentage CAPITALS_PERCENTAGE
+                            Percentage of characters that will be a capital letter. Default is 0.
+      -r RANDOM_SEED, --random_seed RANDOM_SEED
+                            Allows following a determinstic sequence of random values. Default is the system timer.
 
 eg:
 
 .. code:: shell
 
     python practice_mappings.py
-    python practice_mappings.py -symbols 5 20
-    python practice_mappings.py -dragonfly -symbols 5 20 12345
+    python practice_mappings.py 5 --symbols --capitals_percentage 20
+    python practice_mappings.py 5 --dragonfly --symbols --capitals_percentage 20 --random_seed 12345
 
 
 Sample output:
@@ -60,8 +69,7 @@ Talon mode:
 
 .. code:: shell
 
-    $ python ./practice_mappings.py -symbols 3 10
-    usage: python practice_mappings.py [-dragonfly] [-alphabetical] [-symbols] [<combo-length> [<capitals-percentage>]]
+    $ python ./practice_mappings.py 3 --symbols --capitals_percentage 10
     By default, it will run as Talon knausj mode. Or to use Dragonfly mode, add '-dragonfly'.
     See 'https://github.com/shervinemami/practice_speechrec_mappings' for more details
 
@@ -85,8 +93,8 @@ Dragonfly mode:
 
 .. code:: shell
 
-    $ python ./practice_mappings.py -dragonfly -symbols 3 10
-    zlk                                        zimeesi  lazy  krife  
+    $ python ./practice_mappings.py 3 --dragonfly --symbols -p 10
+    zlk                                        zircon  lazy  krife  
     zlk
     Correct.                                  Tally: 1 correct = 0.0% WER. Speed: 0.58 s/key
 
