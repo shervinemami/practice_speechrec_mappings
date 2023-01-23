@@ -22,6 +22,8 @@ parser.add_argument('combo_length', type=int, nargs='?', help='How many characte
 parser.add_argument('-d', '--dragonfly', action='store_true', help='Use Dragonfly mode ("lettermap.py" + "punctuationmap.py"). Default is Talon mode.')
 parser.add_argument('-a', '--alphabetical', action='store_true', help='Sort the characters alphabetically. Default is random (ie: unsorted).')
 parser.add_argument('-s', '--symbols', action='store_true', help='Include some symbols in the mix. Default is just alphabet letters, not symbols.')
+parser.add_argument('-n', '--no_numbers', action='store_true', help='Skip numerals, only use letters (and possibly symbols). Default is to include numbers.')
+parser.add_argument('-c', '--no_crucial', action='store_true', help='Skip crucial symbols (commas and spaces). Default is to include crucial symbols.')
 parser.add_argument('-p', '--capitals_percentage', type=int, default=0, help='Percentage of characters that will be a capital letter. Default is 0.')
 parser.add_argument('-r', '--random_seed', type=int, help='Allows following a determinstic sequence of random values. Default is the system timer.')
 args = parser.parse_args()
@@ -240,12 +242,14 @@ if not args.dragonfly:
 # Sort the dictionary alphabetically, to allow showing characters in alphabetical order if desired.
 #letterMap = sorted(letterMap.iterkeys())
 letterMap = sorted(letterMap.items(), key=operator.itemgetter(1))
-numbersAsList = sorted(numberMap.items(), key=operator.itemgetter(1))
-letterMap.extend(numbersAsList)
+if not args.no_numbers:
+    numbersAsList = sorted(numberMap.items(), key=operator.itemgetter(1))
+    letterMap.extend(numbersAsList)
 # Include the crucial list twice, so they will get chosen more often than other symbols.
-crucialAsList = sorted(crucialMap.items(), key=operator.itemgetter(1))
-letterMap.extend(crucialAsList)
-letterMap.extend(crucialAsList)
+if not args.no_crucial:
+    crucialAsList = sorted(crucialMap.items(), key=operator.itemgetter(1))
+    letterMap.extend(crucialAsList)
+    letterMap.extend(crucialAsList)
 
 # Possibly include symbols in addition to letters.
 if args.symbols:
