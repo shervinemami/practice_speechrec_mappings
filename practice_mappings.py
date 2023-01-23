@@ -11,48 +11,35 @@ import sys
 import random
 import time
 import operator
+import argparse
 
+# Instantiate the argument parser
+parser = argparse.ArgumentParser(usage='%(prog)s [options] [combo_length]')
 
-# Default settings
-combo = 3   # Allow custom combo length
-capitalPercentage = 0
-randomseed = None   # Default to using system timer as the random seed
-showAlphabetically = False
-includeSymbols = False
-useDragonflyMappings = False
 # Process the command-line args before doing anything else, so we can load files based on the args.
-print("usage: python practice_mappings.py [-dragonfly] [-alphabetical] [-symbols] [<combo-length=" \
-         + str(combo) + "> [<capitals-percentage=" + str(capitalPercentage) + "> [<random-seed=" \
-         + str(randomseed) + ">]]]")
-print("By default, it will run as Talon knausj mode. Or to use Dragonfly mode, add '-dragonfly'.") 
+combo = 3
+parser.add_argument('combo_length', type=int, nargs='?', help='How many characters you will try to say at the same time. Default is 3.')
+parser.add_argument('-d', '--dragonfly', action='store_true', help='Use Dragonfly mode ("lettermap.py" + "punctuationmap.py"). Default is Talon mode.')
+parser.add_argument('-a', '--alphabetical', action='store_true', help='Sort the characters alphabetically. Default is random (ie: unsorted).')
+parser.add_argument('-s', '--symbols', action='store_true', help='Include some symbols in the mix. Default is just alphabet letters, not symbols.')
+parser.add_argument('-p', '--capitals_percentage', type=int, default=0, help='Percentage of characters that will be a capital letter. Default is 0.')
+parser.add_argument('-r', '--random_seed', type=int, help='Allows following a determinstic sequence of random values. Default is the system timer.')
+args = parser.parse_args()
+
+print("Practice keyboard mappings, such as to practice voice coding. By Shervin Emami (http://shervinemami.com), 2023.")
+print("By default, it will run as Talon knausj mode. Or to use Dragonfly mode, add '--dragonfly'.")
 print("See 'https://github.com/shervinemami/practice_speechrec_mappings' for more details")
 print("")
-# Parse commandline args
-startOfArgs = 1
-if len(sys.argv) > startOfArgs and sys.argv[startOfArgs] == "-dragonfly":
-    useDragonflyMappings = True
-    startOfArgs = startOfArgs+1
-if len(sys.argv) > startOfArgs and sys.argv[startOfArgs] == "-alphabetical":
-    showAlphabetically = True
-    startOfArgs = startOfArgs+1
-if len(sys.argv) > startOfArgs and sys.argv[startOfArgs] == "-symbols":
-    includeSymbols = True
-    startOfArgs = startOfArgs+1
-if len(sys.argv) > startOfArgs:
-    combo = int(sys.argv[startOfArgs])
-    print("Using combos of length", combo)
-    startOfArgs = startOfArgs+1
-if len(sys.argv) > startOfArgs:
-    capitalPercentage = int(sys.argv[startOfArgs])
-    print("Using capital letters", capitalPercentage, "% of the time")
-    startOfArgs = startOfArgs+1
-if len(sys.argv) > startOfArgs:
-    randomseed = int(sys.argv[startOfArgs])
-    print("Using", randomseed, "as the random seed instead of the current time")
-    random.seed(randomseed)
+
+if args.combo_length:
+    combo = args.combo_length
+
+if args.random_seed:
+    print("Using", args.random_seed, "as the random seed instead of the current time")
+    random.seed(args.random_seed)
 
 
-if useDragonflyMappings:
+if args.dragonfly:
     # Import the "letterMap" dictionary from the "lettermap.py" file that's in the MacroSystem folder.
     # Make sure you adjust this path to where it's located on your machine, relative to this script.
     sys.path.append('../MacroSystem')
@@ -238,7 +225,7 @@ def load_talon_symbolmap(filename):
 #--------------------------------------
 
 
-if not useDragonflyMappings:
+if not args.dragonfly:
     # First try loading the alphabet CSV into a dictionary.
     new_lettermap = load_talon_lettermap(CSV_filename)
     if len(new_lettermap) > 0:
@@ -261,7 +248,7 @@ letterMap.extend(crucialAsList)
 letterMap.extend(crucialAsList)
 
 # Possibly include symbols in addition to letters.
-if includeSymbols:
+if args.symbols:
     # Add double entries for the main characters, so they will get chosen more often than the other symbols.
     letterMap.extend(letterMap)
     # Other symbols
@@ -287,7 +274,7 @@ while (True):
     chars = []
     words = []
     for i in range(combo):
-        if showAlphabetically:
+        if args.alphabetical:
             r = nextAlphabet         # Pick the next letter
             nextAlphabet = nextAlphabet + 1
             if nextAlphabet >= len(letterMap):
@@ -295,7 +282,7 @@ while (True):
         else:
             r = random.randint(0, len(letterMap) - 1)    # Pick a random letter
         (word, char) = letterMap[r]
-        if random.randint(0, 100) < capitalPercentage:    # Occasionally use a capital letter
+        if random.randint(0, 100) < args.capitals_percentage:    # Occasionally use a capital letter
             char = char.upper()
             word = word.upper()
         #print("%25s %25s" % (word, char))
