@@ -185,25 +185,34 @@ def load_talon_lettermap(CSV_filename):
 # Assumes pyfile has already been opened and the file pointer is now at a new line containing the dictionary mappings (ie: after a "{").
 def extract_dictionary_from_part_of_python_file(pyfile, d={}):
     # Scan the line to find the phrase, and the symbol it maps to.
-    # The line is typically something like the string: ' "question mark": "?",\n'
+    # The line is typically something like the string: '  "question mark": "?",   # A random comment.\n'
     for line in pyfile:
-        # Remove whitespace at the start of the string, then see if it starts with a '"' character.
+        # Remove whitespace at the start of the string, then see if it starts with a '"' or "'" single-quote or double-quote character.
         line = line.lstrip()
         #print("line: ", line)
-        if len(line) >= 6 and line[0] == '"':
-            # Make sure this phrase starts with an actual alphatical letter, not a symbol such as ','.
+        if len(line) >= 6 and (line[0] == '"' or line[0] == "'"):
+            # Make sure this phrase starts with an actual alphabetical letter, not a symbol such as ','.
             if line[1].isalpha():
-                # Remove the comma & whitespace & line-ending at the end of the string, and then split up the string by ':'
-                # This should generate something like: ['"question mark"', ' "?"']
-                words = line.rstrip(', \n').split(':')
-                if len(words) >= 2 and len(words[0]) >= 1 and len(words[1]) >= 1:
-                    phrase = words[0].lstrip('"').rstrip('"')
-                    symbol = words[1].lstrip(' "').rstrip('"')
-                    if len(phrase) >= 1 and len(symbol) >= 1:
-                        #print("phrase=<" + phrase + ">, \t symbol=<" + symbol + ">.")
-                        # Add the mapping to our dictionary.
-                        d[phrase] = symbol
-        elif "}" in line:
+                # Remove the potential whitespace & potential random stuff & line-ending at the end of the string after the comma.
+                # This should generate something like: '"question mark": "?"'
+                words = line.split(',')[0]
+                if len(words) >= 1:
+                    # Split up the string by ':'
+                    words = words.split(':')     # eg: ['"question mark"', '"?"']
+                    if len(words) >= 2 and len(words[0]) >= 1 and len(words[1]) >= 1:
+                        phrase = words[0].lstrip('"').rstrip('"')          # eg: 'question mark'
+                        symbol = words[1].lstrip(' "').rstrip('"')         # eg: '?'
+                        if len(phrase) >= 1 and len(symbol) >= 1:
+                            # If the symbol starts with a '\' character, remove it, but leave whatever is after it.
+                            if symbol[0] == '\\':
+                                symbol = symbol[1]
+                            # If the symbol starts & ends with a "'" character, remove it, but leave whatever is after it.
+                            if symbol[0] == "'" and len(symbol) > 1 and symbol[-1] == "'":
+                                symbol = symbol[1]
+                            #print("phrase=<" + phrase + ">, \t symbol=<" + symbol + ">.")
+                            # Add the mapping to our dictionary.
+                            d[phrase] = symbol
+        elif line.lstrip()[0] == "}":  # Check for a close brace, but skip close braces that are inside strings, since the user probably has a close brace in their alphabet!
             break
 
 # Try to load the symbolmap from a given Talon keys.py file
@@ -223,6 +232,7 @@ def load_talon_symbolmap(filename):
             if "symbol_key_words = {" in line:
                 break
         extract_dictionary_from_part_of_python_file(pyfile, new_symbolmap)
+    #print(new_symbolmap)
     return new_symbolmap
 #--------------------------------------
 
