@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # A very mininal game that helps practice names of keys for Dragonfly or knausj Talon speech recognition grammars.
 # By Shervin Emami 2023, "http://shervinemami.com/".
-# Tested on Ubuntu 22.04 using python 3.10.
+# Tested on Ubuntu 23.04 using python 3.10.
 
 # Python 2/3 compatibility
 from __future__ import print_function
@@ -12,6 +12,8 @@ import random
 import time
 import operator
 import argparse
+
+from failed import FailedCodes
 
 # Instantiate the argument parser
 parser = argparse.ArgumentParser(usage='%(prog)s [options] [combo_length]')
@@ -26,6 +28,7 @@ parser.add_argument('-n', '--no_numbers', action='store_true', help='Skip numera
 parser.add_argument('-c', '--no_crucial', action='store_true', help='Skip crucial symbols (commas and spaces). Default is to include crucial symbols.')
 parser.add_argument('-p', '--capitals_percentage', type=int, default=0, help='Percentage of characters that will be a capital letter. Default is 0.')
 parser.add_argument('-r', '--random_seed', type=int, help='Allows following a determinstic sequence of random values. Default is the system timer.')
+parser.add_argument('-A', '--adaptive', action='store_true', default=False, help='Adaptive mode. Store errors and adaptively offer the most common errors first. Default is no adaptive mode.')
 args = parser.parse_args()
 
 print("Practice keyboard mappings, such as to practice voice coding. By Shervin Emami (http://shervinemami.com), 2023.")
@@ -40,6 +43,8 @@ if args.random_seed:
     print("Using", args.random_seed, "as the random seed instead of the current time")
     random.seed(args.random_seed)
 
+if args.adaptive:
+    print("Adaptive mode is enabled. Failed combos will be stored and offered later, randomly.")
 
 if args.dragonfly:
     # Import the "letterMap" dictionary from the "lettermap.py" file that's in the MacroSystem folder.
@@ -283,26 +288,43 @@ tallyWrong = 0
 averagedSpeed = -1    # Initialize with the first measurement
 nextAlphabet = 0
 
+# prepare reverse letterMap
+reverseLetterMap = {v: k for k, v in letterMap}
+# prepare failed combos object
+# TODO: probabilities and repetitions should be configurable from command line
+failed_combos = FailedCodes(repetitions=3)
 while (True):
     truth = ""
     chars = []
     words = []
-    for i in range(combo):
-        if args.alphabetical:
-            r = nextAlphabet         # Pick the next letter
-            nextAlphabet = nextAlphabet + 1
-            if nextAlphabet >= len(letterMap):
-                nextAlphabet = 0
-        else:
-            r = random.randint(0, len(letterMap) - 1)    # Pick a random letter
-        (word, char) = letterMap[r]
-        if random.randint(0, 100) < args.capitals_percentage:    # Occasionally use a capital letter
-            char = char.upper()
-            word = word.upper()
-        #print("%25s %25s" % (word, char))
-        chars.append(char)
-        words.append(word)
-        truth += char
+    # Get failed combo from storage first, if exists, if not, FailedCodes.random returns None
+    # 0.5 is the probability of getting the failed combo
+    # 0.1 is the probability of getting the least failed combo (but still failed)
+    truth_candidate = failed_combos.random(0.5, 0.1)
+    # in adaptive mode, devote 20% of attempts to fix failed combos
+    if args.adaptive and truth_candidate is not None and random.random() < 0.5:
+        nf = failed_combos.get_num_of_repetitions(truth_candidate)
+        print(f"Retrying preivously failed combo '{truth_candidate}' ({nf} repetitions to go)")
+        truth = truth_candidate
+        chars = truth
+        words = [reverseLetterMap[c] for c in truth]
+    else:
+        for i in range(combo):
+            if args.alphabetical:
+                r = nextAlphabet         # Pick the next letter
+                nextAlphabet = nextAlphabet + 1
+                if nextAlphabet >= len(letterMap):
+                    nextAlphabet = 0
+            else:
+                r = random.randint(0, len(letterMap) - 1)    # Pick a random letter
+            (word, char) = letterMap[r]
+            if random.randint(0, 100) < args.capitals_percentage:    # Occasionally use a capital letter
+                char = char.upper()
+                word = word.upper()
+            #print("%25s %25s" % (word, char))
+            chars.append(char)
+            words.append(word)
+            truth += char
 
     # Print all the characters on a single line
     for i in range(combo):
@@ -333,8 +355,10 @@ while (True):
         tallyCorrect = tallyCorrect+1
         wordErrorRate = 100.0 * (tallyWrong / float(tallyCorrect + tallyWrong))
         print("Correct.                                  Tally: %d correct = %.1f%% WER. Speed: %.2f s/key" % (tallyCorrect, wordErrorRate, averagedSpeed))
+        failed_combos.unfail(truth)
     else:
         tallyWrong = tallyWrong+1
         print("### WRONG! ###### ", truth, typed, "############ Tally:", tallyCorrect, "correct,", tallyWrong, "wrong. ###################################")
+        failed_combos.fail(truth)
     print()
 

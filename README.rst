@@ -52,6 +52,8 @@ Usage:
                             Percentage of characters that will be a capital letter. Default is 0.
       -r RANDOM_SEED, --random_seed RANDOM_SEED
                             Allows following a determinstic sequence of random values. Default is the system timer.
+      -A, --adaptive        Adaptive mode. Store errors and adaptively offer the most common
+                            errors first. Default is no adaptive mode.
 
 eg:
 
@@ -126,4 +128,6 @@ Or for Dragonfly mode, to use your own Dragonfly grammar and not myne, you'll ne
         ...
     }
 
+Adaptive mode:
 
+In adaptive mode it will store errors and adaptively offer failed combos randomly, most common errors first. Default is no adaptive mode.
